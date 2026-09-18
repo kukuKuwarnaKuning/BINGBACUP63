@@ -782,11 +782,12 @@
             document.getElementById('selection-screen').classList.remove('hidden');
         }
 
-// 4. Message Board Logic (SheetDB)
+// 4. Message Board Logic (SheetDB Fix)
         const API_URL = "https://sheetdb.io/api/v1/4qu3gyetitbpb";
 
         function submitReply() {
             const txt = document.getElementById('reply-input').value;
+            
             if(!txt || txt.trim() === "") {
                 alert("Tulis pesan dulu dong! 💌");
                 return;
@@ -797,12 +798,13 @@
 
             alert("Sedang mengirim pesan...");
 
-            const dataToSend = {
+            // Format baku SheetDB menggunakan pembungkus 'data' dan array
+            const payload = {
                 data: [
                     {
-                        sender: name,
-                        text: txt,
-                        date: currentDate
+                        "Sender": name,
+                        "Text": txt,
+                        "Date": currentDate
                     }
                 ]
             };
@@ -813,20 +815,21 @@
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(dataToSend)
+                body: JSON.stringify(payload)
             })
-            .then(response => response.json())
+            .then(response => {
+                return response.json();
+            })
             .then(data => {
                 alert("Pesan berhasil dikirim ke Galeri Love Letter! 🌻");
                 document.getElementById('reply-input').value = "";
-                showBoard(); 
+                showBoard(); // Langsung muat ulang galeri untuk menampilkan pesan baru
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Error saat kirim:', error);
                 alert("Gagal mengirim pesan. Cek koneksi internet.");
             });
         }
-
         function showBoard() {
             document.getElementById('content-view').classList.add('hidden');
             document.getElementById('selection-screen').classList.add('hidden');
