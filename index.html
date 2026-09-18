@@ -1007,15 +1007,17 @@
                 });
             }
         }
-
-        function toggleMusic() {
+            
+            function toggleMusic() {
             const audio = document.getElementById('bg-music');
             if(audio.paused) audio.play(); else audio.pause();
         }
 
-        // Init
-        createStars();
-        initGame();
+        // --- INIT (Jalankan saat halaman dimuat) ---
+        window.onload = function() {
+            createStars();
+            initGame(); // <--- TAMBAHKAN BARIS INI
+        };
 
     </script>
 </body>
