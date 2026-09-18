@@ -443,150 +443,26 @@
             </div>
         </div>
 
-     <!-- 5. REPLY SECTION -->
-    <div class="reply-section">
-        <h2 class="handwriting" style="margin-bottom: 20px;">Berikan curahan Love letter💌</h2>
-        <textarea id="reply-input" placeholder="Sisihkan kata kata ajaib kalian di sini..."></textarea>
-        <br>
-        <!-- Tombol langsung mengarah ke Secreto kamu -->
-        <a href="https://secreto.site/id/bfna" target="_blank">
-            <button class="btn-gold">Kirim Pesan ke Secreto</button>
-        </a>
+        <!-- 5. REPLY SECTION -->
+        <div class="reply-section">
+            <h2 class="handwriting" style="margin-bottom: 20px;">Berikan curahan Love letter💌</h2>
+            <textarea id="reply-input" placeholder="Sisihkan kata kata ajaib kalian di sini..."></textarea>
+            <br>
+            <button class="btn-gold" onclick="submitReply()">Kirim Pesan</button>
+            <br><br>
+            <button onclick="showBoard()" style="background:none; border:none; color: #aaa; cursor:pointer; text-decoration:underline;">Lihat Galeri Love Letter Lainnya</button>
+        </div>
     </div>
-</div>
 
-<script>
-    // --- LOGIC ---
+    <!-- 6. BOARD VIEW (Semua Pesan Masuk) -->
+    <section id="board-view" class="hidden">
+        <div class="back-btn" onclick="goBack()">&larr; Kembali</div>
+        <h1 class="handwriting" style="text-align: center; color: var(--star-gold);">Galeri Love Letter</h1>
+        <div class="board-grid" id="msg-container">
+            <!-- Pesan akan muncul disini -->
+        </div>
+    </section>
 
-    // 1. Star Background Generator
-    function createStars() {
-        const container = document.getElementById('star-bg');
-        for(let i=0; i<100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.width = Math.random() * 3 + 'px';
-            star.style.height = star.style.width;
-            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
-            container.appendChild(star);
-        }
-        for(let i=0; i<3; i++) {
-            const s = document.createElement('div');
-            s.className = 'shooting-star';
-            s.style.top = Math.random() * 50 + '%';
-            s.style.left = (Math.random() * 50 + 50) + '%';
-            s.style.animationDelay = (Math.random() * 5) + 's';
-            container.appendChild(s);
-        }
-    }
-
-    // 2. Game Logic (Space Memory)
-    const gameGrid = document.getElementById('game-grid');
-    const gameStatus = document.getElementById('game-status');
-    const unlockMsg = document.getElementById('unlock-msg');
-    const icons = ['🪐', '🪐', '🌟', '🌟', '🚀', '🚀', '☄️', '☄️'];
-    let cards = [...icons];
-    let flippedCards = [];
-    let matches = 0;
-    let isLocked = false;
-
-    function initGame() {
-        cards.sort(() => 0.5 - Math.random());
-        gameGrid.innerHTML = '';
-        cards.forEach((icon, idx) => {
-            const card = document.createElement('div');
-            card.className = 'game-card';
-            card.innerHTML = '?';
-            card.dataset.val = icon;
-            card.onclick = () => flipCard(card);
-            gameGrid.appendChild(card);
-        });
-    }
-
-    function flipCard(card) {
-        if(isLocked || card.classList.contains('flipped')) return;
-        card.classList.add('flipped');
-        card.innerHTML = card.dataset.val;
-        flippedCards.push(card);
-        
-        if(flippedCards.length === 2) {
-            isLocked = true;
-            if(flippedCards[0].dataset.val === flippedCards[1].dataset.val) {
-                matches++;
-                gameStatus.innerText = `Progress: ${matches}/4`;
-                flippedCards.forEach(c => c.classList.add('matched'));
-                flippedCards = [];
-                isLocked = false;
-                if(matches === 4) {
-                    unlockMsg.classList.remove('hidden');
-                    document.getElementById('bg-music').play();
-                }
-            } else {
-                setTimeout(() => {
-                    flippedCards.forEach(c => {
-                        c.classList.remove('flipped');
-                        c.innerHTML = '?';
-                    });
-                    flippedCards = [];
-                    isLocked = false;
-                }, 1000);
-            }
-        }
-    }
-
-    // 3. Navigation & Routing
-    function goToSelection() {
-        document.getElementById('landing-page').classList.add('hidden');
-        document.getElementById('selection-screen').classList.remove('hidden');
-    }
-
-    function checkRole() {
-        const input = document.getElementById('role-input').value.toLowerCase().trim();
-        let content = null;
-        let title = "";
-
-        if(input.includes('ima')) { content = pembina.ima; title = "Ibu Ima"; }
-        else if(input.includes('bayu')) { content = pembina.bayu; title = "Pak Bayu"; }
-        else if(input.includes('alifia')) { content = { title: 'TERUNTUK ALIFIA', text: bphMpk.alifia }; title = "Alifia"; }
-        else if(input.includes('dikri')) { content = { title: 'TERUNTUK DIKRI', text: bphMpk.dikri }; title = "Dikri"; }
-        else if(input.includes('sifit')) { content = { title: 'TERUNTUK SIFIT', text: bphMpk.sifit }; title = "Siti Fitri"; }
-        else if(input.includes('zahira')) { content = { title: 'TERUNTUK ZAHIRA', text: bphMpk.zahira }; title = "Zahira"; }
-        else if(input.includes('syifa')) { content = { title: 'TERUNTUK SYIFA', text: bphMpk.syifa }; title = "Syifa"; }
-        else if(input.includes('salwaa')) { content = { title: 'TERUNTUK SALWAA', text: bphMpk.salwaa }; title = "Salwaa"; }
-        else if(input.includes('nikey') || input.includes('nikeisha')) { content = { title: 'TERUNTUK NIKEY', text: bphOsis.nikey }; title = "Nikey"; }
-        else if(input.includes('fathan')) { content = { title: 'TERUNTUK FATHAN', text: bphOsis.fathan }; title = "Fathan"; }
-        else if(input.includes('ghina')) { content = { title: 'TERUNTUK GHINA', text: bphOsis.ghina }; title = "Ghina"; }
-        else if(input.includes('putri')) { content = { title: 'TERUNTUK PUTRI', text: bphOsis.putri }; title = "Putri Habibah"; }
-        else if(input.includes('andini')) { content = { title: 'TERUNTUK ANDINI', text: bphOsis.andini }; title = "Andini"; }
-        else {
-            content = { title: '', text: generalText };
-            title = "Wahai orang orang yang buat Makhla jatuh hati";
-        }
-
-        showContent(content, title);
-    }
-
-    function showContent(data, nameTitle) {
-        document.getElementById('selection-screen').classList.add('hidden');
-        document.getElementById('content-view').classList.remove('hidden');
-        
-        document.getElementById('page-title').innerText = nameTitle;
-        document.getElementById('letter-heading').innerText = data.title;
-        document.getElementById('letter-body').innerHTML = data.text;
-        
-        window.scrollTo(0,0);
-    }
-
-    function scrollToMemories() {
-        document.getElementById('memories-area').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function goBack() {
-        document.getElementById('content-view').classList.add('hidden');
-        document.getElementById('selection-screen').classList.remove('hidden');
-    }
-</script>
     <script>
         // --- DATA KONTEN (Disimpan rapi disini) ---
         
@@ -674,17 +550,16 @@
             Kalau selama satu periode ini ada perkataan, keputusan, atau sikap Makhla yang pernah membuatmu kurang nyaman, Makhla minta maaf ya. Maaf juga kalau Makhla belum bisa jadi partner yang baik..<br><br>
             Makhla harap setelah ini kamu tetap menjadi seseorang yang berani menyampaikan pendapat, berani mengambil peran, dan nggak takut untuk berkembang.<br><br>
             Terima kasih sudah menjadi wakil sekaligus teman seperjalanan buat Makhla.<br><br>
-            Kita berhasil sampai garis akhir, Nikey. Yeyy demiss... Dan semoga Nikey selalu ingat sebenci apapun kamu pada osis, pada makhla, atau apapun itu di OSIS SMANSA, justru OSIS lah yang paling besar berdampak postif. Previllege, Sertifikat, dan pengalaman pengalaman yang tidak receh<br><br>
-            Aku harap kamu dapat bersyukur karena telah jadi wakil aku. Dan semoga atu tahun ini berharga... selamatt yaa kamu sekarang bebas dan tidak akan kena spam chat lagi.. Sehat selaluuu <br><br>
+            Kita berhasil sampai garis akhir, Nikey. Yeyy demiss...<br><br>
             Oyaaa key Makhla selalu dapat ulasan positif soal nikey dari orang orang, semua orang melihat proses kamuuu. Dan i think aku ga salah milih partner, aku harap kamu pun tidak menyesal yaa jadi partner makhlaa".<br><br>
             Semoga OSIS MPK SMANSA ada tempat specialnya di lubuk hati nikeyy 🤍`,
             
-            'Fathan Jiraiya': `Untuk Fathan...<br><br>
+            'fathan': `Untuk Fathan...<br><br>
             Fathan, terima kasih sudah menjadi bagian dari perjalanan Makhla selama satu periode ini.<br><br>
             Terima kasih karena sudah membantu banyak hal yang mungkin nggak selalu terlihat. Di balik satu periode kepengurusan yang kelihatan dari luar, ada banyak pekerjaan krusial yang harus diselesaikan, dan Makhla bersyukur kamu menjadi salah satu orang yang ikut memastikan semuanya tetap berjalan.<br><br>
             Terima kasih untuk waktu, tenaga, kesabaran, dan semua kontribusi kamuu.<br><br>
             Kalau selama perjalanan ini Makhla pernah terlalu banyak meminta, terlalu tegas, atau ada perkataan yang kurang berkenan, Makhla minta maaf ya. Maaf juga kalau Makhla kaya kurang mengarahkan..<br><br>
-            Kalau Boleh jujur dari awal mencalonkan jadi ketos, Fathan salah satu orang yang apa ya bisa dibilang buat Maakhla insecure, terkadang Makhla ragu mau revisi atau berpendapat ke fathan.. kaya "emm aku kalau ngasih pendapat aman ga ya, takut kaya sok tau..." Dan makhla tu kaya selalu mikir aaa kayanya makhla yang salah.. jadi seganlahh<br><br>
+            Kalau Boleh jujur dari awal mencalonkan jadi ketos, Fathan salah satu orang yang apa ya bisa dibilang buat Maakhla insecure, terkadang Makhla ragu mau revisi atau berpendapat ke fathan.. kaya "emm aku kalau ngasih pendapat aman ga ya soalnya dia kebih jago, takut kaya sok tau..."<br><br>
             Semoga semua pengalaman selama satu periode ini bisa menjadi bekal yang baik untuk perjalananmu selanjutnya.<br><br>
             Semoga fathan menempatkan osismpk di tempat spesial.... Selamat berjuang fathan 🤍`,
             
@@ -868,7 +743,7 @@
             else if(input.includes('salwaa')) { content = { title: 'TERUNTUK SALWAA', text: bphMpk.salwaa }; title = "Salwaa"; }
             // Check BPH OSIS
             else if(input.includes('nikey') || input.includes('nikeisha')) { content = { title: 'TERUNTUK NIKEY', text: bphOsis.nikey }; title = "Nikey"; }
-            else if(input.includes('fathan jiraiya')) { content = { title: 'TERUNTUK FATHAN', text: bphOsis.fathan }; title = "Fathan"; }
+            else if(input.includes('fathan')) { content = { title: 'TERUNTUK FATHAN', text: bphOsis.fathan }; title = "Fathan"; }
             else if(input.includes('ghina')) { content = { title: 'TERUNTUK GHINA', text: bphOsis.ghina }; title = "Ghina"; }
             else if(input.includes('putri')) { content = { title: 'TERUNTUK PUTRI', text: bphOsis.putri }; title = "Putri Habibah"; }
             else if(input.includes('andini')) { content = { title: 'TERUNTUK ANDINI', text: bphOsis.andini }; title = "Andini"; }
@@ -903,85 +778,18 @@
             document.getElementById('selection-screen').classList.remove('hidden');
         }
 
-// 4. Message Board Logic (SheetDB Fix)
-        const API_URL = "https://sheetdb.io/api/v1/4qu3gyetitbpb";
-
+        // 4. Message Board Logic
         function submitReply() {
             const txt = document.getElementById('reply-input').value;
+            if(!txt) return;
             
-            if(!txt || txt.trim() === "") {
-                alert("Tulis pesan dulu dong! 💌");
-                return;
-            }
+            const name = document.getElementById('page-title').innerText;
+            const msgs = JSON.parse(localStorage.getItem('proximaLetters') || "[]");
+            msgs.push({ sender: name, text: txt, date: new Date().toLocaleDateString() });
+            localStorage.setItem('proximaLetters', JSON.stringify(msgs));
             
-            const name = document.getElementById('page-title').innerText || "Anonymous";
-            const currentDate = new Date().toLocaleDateString('id-ID');
-
-            alert("Sedang mengirim pesan...");
-
-            // Format baku SheetDB menggunakan pembungkus 'data' dan array
-            const payload = {
-                data: [
-                    {
-                        "Sender": name,
-                        "Text": txt,
-                        "Date": currentDate
-                    }
-                ]
-            };
-
-            fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                alert("Pesan berhasil dikirim ke Galeri Love Letter! 🌻");
-                document.getElementById('reply-input').value = "";
-                showBoard(); // Langsung muat ulang galeri untuk menampilkan pesan baru
-            })
-            .catch(error => {
-                console.error('Error saat kirim:', error);
-                alert("Gagal mengirim pesan. Cek koneksi internet.");
-            });
-        }
-        function showBoard() {
-            document.getElementById('content-view').classList.add('hidden');
-            document.getElementById('selection-screen').classList.add('hidden');
-            document.getElementById('board-view').classList.remove('hidden');
-            
-            const container = document.getElementById('msg-container');
-            container.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>Sedang memuat pesan...</p>";
-            
-            fetch(API_URL)
-            .then(response => response.json())
-            .then(data => {
-                container.innerHTML = ""; 
-                
-                if(!data || data.length === 0) {
-                    container.innerHTML = `<div style="text-align:center; grid-column: 1/-1; padding: 20px;"><p>Belum ada pesan. Jadilah yang pertama!</p></div>`;
-                } else {
-                    data.reverse().forEach(m => {
-                        container.innerHTML += `
-                            <div class="msg-card fade-in">
-                                <div class="msg-sender">Dari: ${m.sender || "Anonim"}</div>
-                                <div class="msg-text">"${m.text || ""}"</div>
-                                <div style="margin-top:10px; font-size:0.75rem; color:#aaa; text-align:right;">${m.date || ""}</div>
-                            </div>
-                        `;
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                container.innerHTML = "<p style='text-align:center; grid-column: 1/-1; color: #ff6b6b;'>Gagal memuat pesan.</p>";
-            });
+            alert("Pesan terkirim ke Galeri Love Letter!");
+            document.getElementById('reply-input').value = "";
         }
 
         function showBoard() {
@@ -1007,18 +815,15 @@
                 });
             }
         }
-            
-            function toggleMusic() {
+        function toggleMusic() {
             const audio = document.getElementById('bg-music');
             if(audio.paused) audio.play(); else audio.pause();
         }
 
-        // --- INIT (Jalankan saat halaman dimuat) ---
-        window.onload = function() {
-            createStars();
-            initGame(); // <--- TAMBAHKAN BARIS INI
-        };
+        // Init
+        createStars();
+        initGame();
 
     </script>
 </body>
-</html>
+</html> 
